@@ -1,30 +1,44 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
+  // Commun
   nom: { type: String, required: true },
   prenom: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  motDePasse: { type: String, required: true },
+  motDePasse: { type: String, required: true }, // ⚠️ Hash avec bcrypt côté controller
   dateInscription: { type: Date, default: Date.now },
-  statut: {
+  statut: { type: String, enum: ['actif', 'inactif', 'suspendu'], default: 'actif' },
+  role: {
     type: String,
-    enum: ['actif', 'inactif', 'suspendu'],
-    default: 'inactif'
-  }
+    enum: ['employe', 'etudiant', 'supplier'],
+    required: true
+  },
+
+  // Employé
+  matricule: String,
+  departement: String,
+  roleEmploye: String,
+
+  // Étudiant
+  numeroEtudiant: String,
+  filiere: String,
+  niveauEtude: String,
+  maxEmprunts: Number,
+
+  // Fournisseur
+  nomEntreprise: String,
+  siret: String,
+  adresseEntreprise: String,
+  contactPrincipal: String
 });
 
-// Avant d'enregistrer, hacher le mot de passe
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('motDePasse')) return next();
-  const salt = await bcrypt.genSalt(10);
-  this.motDePasse = await bcrypt.hash(this.motDePasse, salt);
-  next();
-});
-
-// Méthode pour vérifier le mot de passe
-userSchema.methods.verifierMotDePasse = async function (motDePasse) {
-  return await bcrypt.compare(motDePasse, this.motDePasse);
+// Méthodes utilisateur génériques
+userSchema.methods.seConnecter = function() {};
+userSchema.methods.seDeconnecter = function() {};
+userSchema.methods.modifierProfil = function(updates) {
+  Object.assign(this, updates);
+  return this.save();
 };
 
-module.exports = mongoose.model('Utilisateur', userSchema);
+const User = mongoose.model('User', userSchema);
+module.exports = User;

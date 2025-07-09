@@ -33,6 +33,17 @@ exports.getUtilisateurById = async (req, res) => {
   }
 };
 
+// Modifier un utilisateur
+exports.modifierUtilisateur = async (req, res) => {
+  try {
+    const utilisateur = await Utilisateur.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!utilisateur) return res.status(404).json({ message: 'Utilisateur introuvable' });
+    res.json(utilisateur);
+  } catch (err) {
+    res.status(400).json({ erreur: err.message });
+  }
+};
+
 // Supprimer un utilisateur
 exports.supprimerUtilisateur = async (req, res) => {
   try {
