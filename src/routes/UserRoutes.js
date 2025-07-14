@@ -1,12 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const userController = require('../controllers/userController');
+const userController = require('../controller/UserController');
 
-// Routes CRUD
-router.post('/', userController.creerUtilisateur);
-router.get('/', userController.getUtilisateurs);
-router.get('/:id', userController.getUtilisateurById);
-router.put('/:id', userController.modifierUtilisateur);
-router.delete('/:id', userController.supprimerUtilisateur);
+// ✅ Nouvelle route d'inscription
+//router.post('/register', userController.register);
+
+// Routes CRUD existantes
+router.post('/creer', userController.createUser);
+router.get('/getall', userController.getAllUsers);
+router.get('/getbyId/:id', userController.getUserById);
+router.put('/modifie/:id', userController.updateUser);
+router.delete('/supprimer/:id', userController.deleteUser);
+
 
 module.exports = router;
