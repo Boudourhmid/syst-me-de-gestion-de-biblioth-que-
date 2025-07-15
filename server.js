@@ -13,7 +13,7 @@ connectDB(); // Connexion à la base de données
 const app = express();
 app.use(express.json());
 app.get('/', (req, res) => res.send('Backend opérationnel'));
-app.use('/api/users', userRoutes);
+app.use('/api/user',userRoutes);
 app.use('/api/amendes', amendeRoutes);
 app.use('/api/categories', categorieRoutes);
 app.use('/api/commandes', commandeRoutes);

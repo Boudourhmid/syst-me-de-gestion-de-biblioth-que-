@@ -1,6 +1,17 @@
-const User = require('../models/User');
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const User = require('../models/User');
 
+// Génération du token JWT
+const generateToken = (user) => {
+  return jwt.sign(
+    { id: user._id, email: user.email, role: user.role },
+    process.env.JWT_SECRET,
+    { expiresIn: '30d' }
+  );
+};
+
+// Créer un utilisateur
 async function createUser(req, res) {
   try {
     const {
@@ -10,12 +21,15 @@ async function createUser(req, res) {
       nomEntreprise, siret, adresseEntreprise, contactPrincipal
     } = req.body;
 
-    // Vérifie que le rôle est valide
     if (!['employe', 'etudiant', 'supplier'].includes(role)) {
       return res.status(400).json({ message: 'Role invalide.' });
     }
 
-    // Hash du mot de passe
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Utilisateur déjà existant avec cet email.' });
+    }
+
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(motDePasse, salt);
 
@@ -27,13 +41,17 @@ async function createUser(req, res) {
     });
 
     await user.save();
-    res.status(201).json({ message: 'Utilisateur créé avec succès.', user });
+
+    const token = generateToken(user);
+
+    res.status(201).json({ message: 'Utilisateur créé avec succès.', user, token });
 
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 }
 
+// Récupérer tous les utilisateurs
 async function getAllUsers(req, res) {
   try {
     const users = await User.find();
@@ -43,6 +61,7 @@ async function getAllUsers(req, res) {
   }
 }
 
+// Récupérer un utilisateur par ID
 async function getUserById(req, res) {
   try {
     const user = await User.findById(req.params.id);
@@ -53,6 +72,7 @@ async function getUserById(req, res) {
   }
 }
 
+// Mettre à jour un utilisateur
 async function updateUser(req, res) {
   try {
     const updates = req.body;
@@ -72,6 +92,7 @@ async function updateUser(req, res) {
   }
 }
 
+// Supprimer un utilisateur
 async function deleteUser(req, res) {
   try {
     const user = await User.findByIdAndDelete(req.params.id);
@@ -82,6 +103,7 @@ async function deleteUser(req, res) {
   }
 }
 
+// Export des fonctions
 module.exports = {
   createUser,
   getAllUsers,
