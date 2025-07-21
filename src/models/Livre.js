@@ -18,7 +18,7 @@ const livreSchema = mongoose.Schema({
     unique: true
   },
   anneePublication: {
-    type: date,
+    type: Date,
   },
   editeur: {
     type: String
