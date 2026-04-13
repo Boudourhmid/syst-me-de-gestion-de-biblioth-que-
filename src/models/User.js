@@ -7,10 +7,14 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   motDePasse: { type: String, required: true }, // ⚠️ Hash avec bcrypt côté controller
   dateInscription: { type: Date, default: Date.now },
+  imageProfil: {
+    type: String, // We’ll store the filename or image URL
+    required: false,
+  },
   statut: { type: String, enum: ['actif', 'inactif', 'suspendu'], default: 'actif' },
   role: {
     type: String,
-    enum: ['employe', 'etudiant', 'supplier'],
+    enum: ['employe', 'etudiant', 'supplier', 'admin'],
     required: true
   },
 
@@ -33,9 +37,9 @@ const userSchema = new mongoose.Schema({
 });
 
 // Méthodes utilisateur génériques
-userSchema.methods.seConnecter = function() {};
-userSchema.methods.seDeconnecter = function() {};
-userSchema.methods.modifierProfil = function(updates) {
+userSchema.methods.seConnecter = function () { };
+userSchema.methods.seDeconnecter = function () { };
+userSchema.methods.modifierProfil = function (updates) {
   Object.assign(this, updates);
   return this.save();
 };

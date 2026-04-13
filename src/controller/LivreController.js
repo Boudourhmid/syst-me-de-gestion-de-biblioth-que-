@@ -1,8 +1,23 @@
+
 const Livre = require('../models/Livre');
+
 
 async function createLivre(req, res) {
   try {
-    const livre = new Livre(req.body);
+    const { titre, auteur, isbn, anneePublication, editeur, langue, description } = req.body;
+    const image = req.file ? req.file.filename : null; // Get uploaded image filename
+
+    const livre = new Livre({
+      titre,
+      auteur,
+      isbn,
+      anneePublication,
+      editeur,
+      langue,
+      description,
+      image,
+    });
+
     await livre.save();
     res.status(201).json(livre);
   } catch (error) {
@@ -10,9 +25,10 @@ async function createLivre(req, res) {
   }
 }
 
+
 async function getAllLivres(req, res) {
   try {
-    const livres = await Livre.find().populate('categorie');
+    const livres = await Livre.find();
     res.json(livres);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -21,7 +37,7 @@ async function getAllLivres(req, res) {
 
 async function getLivreById(req, res) {
   try {
-    const livre = await Livre.findById(req.params.id).populate('categorie');
+    const livre = await Livre.findById(req.params.id);
     if (!livre) {
       return res.status(404).json({ message: 'Livre non trouvé' });
     }

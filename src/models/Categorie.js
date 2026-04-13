@@ -4,20 +4,18 @@ const categorieSchema = mongoose.Schema({
   nom: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
+    trim: true
   },
   description: {
-    type: String
-  }
-,
-  idCategorie:{
-    type: mongoose.Schema.Types.ObjectId,
-    required: true
+    type: String,
+    default: ""
   },
   codeClassification: {
     type: String,
-    required: true
-}
+    required: true,
+    trim: true
+  }
 }, {
   timestamps: true
 });
