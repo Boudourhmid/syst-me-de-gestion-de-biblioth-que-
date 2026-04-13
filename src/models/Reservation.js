@@ -14,7 +14,7 @@ const reservationSchema = new mongoose.Schema(
     },
     exemplaire: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Copy",
+      ref: "Exemplaire",
       required: true,
     },
     dateReservation: {

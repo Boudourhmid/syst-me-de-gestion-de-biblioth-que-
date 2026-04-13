@@ -22,7 +22,7 @@ const app = express(); // ⚠️ doit être défini AVANT les app.use
 
 // Middleware CORS
 app.use(cors({
-  origin: 'http://localhost:5173', // ton frontend Vite
+  origin: 'http://localhost:5174', // ton frontend Vite
   credentials: true
 }));
 
